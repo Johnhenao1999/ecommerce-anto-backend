@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:5173'];
+  const allowedOrigins = ['http://localhost:5173' , 'https://antostoremakeup.vercel.app'];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
