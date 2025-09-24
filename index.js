@@ -40,23 +40,24 @@ app.get('/', (req, res) => {
   res.send('Hello from Vercel!');
 });
 
-// ====== Conexión a Mongo ======
-mongoose
-  .connect(
-    'mongodb+srv://antostorebeautymakeup:Q53RTUNqGfrIJoJq@antostore.a4bm6c0.mongodb.net/antostore?retryWrites=true&w=majority&appName=AntoStore'
-  )
-  .then(() => console.log('✅ Conectado correctamente a la base de datos'))
-  .catch((err) => {
-    console.error('❌ Error al conectar a la base de datos:', err);
-  });
+// Conexión a la base de datos
+const connectDb = async () => {
+  try {
+    await mongoose.connect('mongodb+srv://antostorebeautymakeup:Q53RTUNqGfrIJoJq@antostore.a4bm6c0.mongodb.net/antostore?retryWrites=true&w=majority&appName=AntoStore');
+    console.log('Conectado correctamente a la base de datos');
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+    process.exit(1); // Termina el proceso si no puede conectar a la base de datos
+  }
+};
 
+const startServer = async () => {
+  await connectDb();
+  app.listen(3000, () => {
+      console.log("Server on port 3000");
+  });
+};
+
+startServer();
 // ====== Exportar app para Vercel ======
 module.exports = app;
-
-// ====== Levantar servidor solo en local ======
-if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
-  });
-}
