@@ -2,8 +2,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const connectDb = require('./config/db'); // conexión a MongoDB
-const Routes = require('./routes/routes'); // asegúrate que exista
+const mongoose = require('mongoose');
+const Routes = require('./routes/routes'); // asegúrate de que exista
 
 const app = express();
 
@@ -16,8 +16,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Permitir peticiones sin origin (ej: Postman, servidores internos)
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); // Postman o internos
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
@@ -41,21 +40,29 @@ app.get('/', (req, res) => {
   res.send('Hello from Vercel!');
 });
 
-// ====== Start server ======
+// ====== Conexión a Mongo y servidor ======
 const startServer = async () => {
   try {
-    await connectDb();
+    await mongoose.connect(
+      'mongodb+srv://antostorebeautymakeup:Q53RTUNqGfrIJoJq@antostore.a4bm6c0.mongodb.net/?retryWrites=true&w=majority&appName=AntoStore',
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      }
+    );
+    console.log('✅ Conectado correctamente a la base de datos');
+
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Error al iniciar servidor:', error);
+    console.error('❌ Error al conectar a la base de datos:', error);
     process.exit(1);
   }
 };
 
 startServer();
 
-// ✅ Exportar app para que Vercel lo use
+// Exportar para Vercel
 module.exports = app;
