@@ -10,7 +10,7 @@ const app = express();
 
 // Configurar CORS
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://lsneakers.vercel.app'], // Acepta ambos orígenes
+  origin: ['http://localhost:5173', 'https://antostoremakeup.vercel.app'], // Acepta ambos orígenes
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
