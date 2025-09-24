@@ -5,35 +5,38 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const Routes = require('./routes/routes');
 
+// ====== CORS ======
 const app = express();
 
-// ====== CORS ======
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://antostoremakeup.vercel.app'
-];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // Postman o internos
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  })
-);
-
+// Configurar CORS
+const corsOptions = {
+  origin: ['http://localhost:5173', 'https://lsneakers.vercel.app'], // Acepta ambos orígenes
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 // ====== Middlewares ======
-app.use(express.json());
 app.use(morgan('dev'));
+app.use(express.json());
 
-// ====== Rutas ======
+app.use((req, res, next) => {
+  const allowedOrigins = ['http://localhost:5173', 'https://antostoremakeup.vercel.app'];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Manejo de preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use('/api', Routes);
 
 app.get('/', (req, res) => {
