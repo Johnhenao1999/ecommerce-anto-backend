@@ -35,6 +35,10 @@ app.use((req, res, next) => {
 // Rutas
 app.use('/api', Routes); // Ruta para productos
 
+app.get('/', (req, res) => {
+  res.send('Hello from Vercel!');
+});
+
 // Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
