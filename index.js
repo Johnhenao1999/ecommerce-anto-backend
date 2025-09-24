@@ -1,21 +1,13 @@
+// index.js
 const express = require('express');
-const bodyParser = require('body-parser');
-const connectDB = require('./config/db');
 const morgan = require('morgan');
 const cors = require('cors');
-const Routes = require('./routes/routes'); // Asegúrate de que esta ruta exista
+const connectDb = require('./config/db'); // conexión a MongoDB
+const Routes = require('./routes/routes'); // asegúrate que exista
 
 const app = express();
-const PORT = 3000;
 
-// Conectar a la base de datos MongoDB
-connectDB();
-
-// Middleware básicos
-app.use(bodyParser.json());
-app.use(morgan('dev'));
-
-// ✅ Middleware CORS
+// ====== CORS ======
 const allowedOrigins = [
   'http://localhost:5173',
   'https://antostoremakeup.vercel.app'
@@ -24,7 +16,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // permitir peticiones sin origin (ej: Postman)
+      // Permitir peticiones sin origin (ej: Postman, servidores internos)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
@@ -38,14 +30,32 @@ app.use(
   })
 );
 
-// Rutas
+// ====== Middlewares ======
+app.use(express.json());
+app.use(morgan('dev'));
+
+// ====== Rutas ======
 app.use('/api', Routes);
 
 app.get('/', (req, res) => {
   res.send('Hello from Vercel!');
 });
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+// ====== Start server ======
+const startServer = async () => {
+  try {
+    await connectDb();
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ Error al iniciar servidor:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+// ✅ Exportar app para que Vercel lo use
+module.exports = app;
