@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
-//const productRoutes = require('./routes/auth.routes');
 const morgan = require('morgan');
-const Routes = require('./routes/routes'); // Asegúrate de que la ruta sea correcta
+const cors = require('cors');
+const Routes = require('./routes/routes'); // Asegúrate de que esta ruta exista
 
 const app = express();
 const PORT = 3000;
@@ -11,29 +11,35 @@ const PORT = 3000;
 // Conectar a la base de datos MongoDB
 connectDB();
 
-// Middleware para parsear el cuerpo de la solicitud
+// Middleware básicos
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:5173' , 'https://antostoremakeup.vercel.app'];
-  const origin = req.headers.origin;
+// ✅ Middleware CORS
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://antostoremakeup.vercel.app'
+];
 
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // permitir peticiones sin origin (ej: Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  })
+);
 
-  // Manejo de preflight OPTIONS request
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
 // Rutas
-app.use('/api', Routes); // Ruta para productos
+app.use('/api', Routes);
 
 app.get('/', (req, res) => {
   res.send('Hello from Vercel!');
