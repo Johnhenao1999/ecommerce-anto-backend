@@ -169,6 +169,60 @@ const agregarSubcategoria = async (req, res) => {
 
 
 /* ================================
+   Eliminar una categoría completa 🗑️
+=================================== */
+const eliminarCategoria = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const categoriaEliminada = await Categoria.findByIdAndDelete(id);
+    if (!categoriaEliminada) {
+      return res.status(404).json({ error: 'Categoría no encontrada' });
+    }
+
+    res.status(200).json({
+      mensaje: 'Categoría eliminada correctamente',
+      categoria: categoriaEliminada,
+    });
+  } catch (err) {
+    console.error('❌ Error al eliminar categoría:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+/* ================================
+   Eliminar una subcategoría específica 🗑️
+=================================== */
+const eliminarSubcategoria = async (req, res) => {
+  try {
+    const { catId, subId } = req.params;
+
+    const categoria = await Categoria.findById(catId);
+    if (!categoria) {
+      return res.status(404).json({ error: 'Categoría no encontrada' });
+    }
+
+    const sub = categoria.subcategorias.id(subId);
+    if (!sub) {
+      return res.status(404).json({ error: 'Subcategoría no encontrada' });
+    }
+
+    // Elimina la subcategoría del array
+    sub.deleteOne();
+    await categoria.save();
+
+    res.status(200).json({
+      mensaje: 'Subcategoría eliminada correctamente',
+      subcategorias: categoria.subcategorias,
+    });
+  } catch (err) {
+    console.error('❌ Error al eliminar subcategoría:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+
+/* ================================
    Exportación de controladores
 =================================== */
 module.exports = {
@@ -177,4 +231,6 @@ module.exports = {
   actualizarCategoria,
   actualizarSubcategoria,
   agregarSubcategoria,
+  eliminarCategoria,
+  eliminarSubcategoria,
 };
