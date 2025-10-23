@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const Routes = require('./routes/routes');
+const sitemapRoutes = require('./routes/sitemap');
 
 // ====== CORS ======
 const app = express();
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
 
   next();
 });
-
+app.use('/', sitemapRoutes);
 app.use('/api', Routes);
 
 app.get('/', (req, res) => {
