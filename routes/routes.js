@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { crearProducto, listarCategoriasConProductos , actualizarProducto, eliminarProducto} = require('../controllers/crearProducto');
-const { crearCategoria, obtenerCategorias } = require('../controllers/createCategory');
+const { crearCategoria, obtenerCategorias, actualizarCategoria, actualizarSubcategoria, agregarSubcategoria } = require('../controllers/createCategory');
 const { login, registrar, logout } = require('../controllers/authController');
 
 
@@ -18,6 +18,9 @@ router.delete('/products/:id', eliminarProducto);
 router.post('/categories', crearCategoria);
 // Ruta para obtener todas las categorías
 router.get('/categories', obtenerCategorias);
+router.put('/categories/:id', actualizarCategoria);
+router.put('/categories/sub/:catId/:subId', actualizarSubcategoria);
+router.post('/categories/:catId/sub', agregarSubcategoria);
 // Rutas de autenticación
 router.post('/auth/login', login);
 router.post('/auth/register', registrar);
