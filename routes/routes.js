@@ -1,7 +1,8 @@
 const { Router } = require('express');
-const { crearProducto, listarCategoriasConProductos , actualizarProducto, eliminarProducto} = require('../controllers/crearProducto');
+const { crearProducto, listarCategoriasConProductos, actualizarProducto, eliminarProducto } = require('../controllers/crearProducto');
 const { crearCategoria, obtenerCategorias, actualizarCategoria, actualizarSubcategoria, agregarSubcategoria, eliminarCategoria, eliminarSubcategoria } = require('../controllers/createCategory');
 const { login, registrar, logout } = require('../controllers/authController');
+const { crearOrden, listarOrdenes, obtenerOrdenPorId, actualizarEstadoOrden, eliminarOrden } = require('../controllers/ordersController');
 
 
 const router = Router();
@@ -27,6 +28,12 @@ router.delete('/categories/:catId/sub/:subId', eliminarSubcategoria);
 router.post('/auth/login', login);
 router.post('/auth/register', registrar);
 router.post('/auth/logout', logout);
+
+router.post('/orders', crearOrden);              // Crear una orden
+router.get('/orders', listarOrdenes);            // Listar todas
+router.get('/orders/:id', obtenerOrdenPorId);     // Obtener una específica
+router.put('/orders/:id', actualizarEstadoOrden); // Actualizar estado
+router.delete('/orders/:id', eliminarOrden);      // Eliminar orden
 
 
 
