@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema(
         enum: ["Efectivo", "Nequi", "Daviplata"],
         required: true
       },
+      observaciones: { type: String, required: false }
     },
     items: [
       {
