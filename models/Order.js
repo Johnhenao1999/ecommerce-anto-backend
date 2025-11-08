@@ -11,9 +11,9 @@ const orderSchema = new mongoose.Schema(
       formaPago: {
         type: String,
         enum: ["Efectivo", "Nequi", "Daviplata"],
-        required: true
+        required: true,
       },
-      observaciones: { type: String, required: false }
+      observaciones: { type: String, required: false },
     },
     items: [
       {
@@ -23,6 +23,11 @@ const orderSchema = new mongoose.Schema(
         precio: Number,
       },
     ],
+
+    // 💸 Campos para descuentos y códigos promocionales
+    codigoDescuento: { type: String, required: false },
+    descuentoAplicado: { type: Number, default: 0 },
+
     total: { type: Number, required: true },
     estado: {
       type: String,

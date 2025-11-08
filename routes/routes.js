@@ -3,6 +3,13 @@ const { crearProducto, listarCategoriasConProductos, actualizarProducto, elimina
 const { crearCategoria, obtenerCategorias, actualizarCategoria, actualizarSubcategoria, agregarSubcategoria, eliminarCategoria, eliminarSubcategoria } = require('../controllers/createCategory');
 const { login, registrar, logout } = require('../controllers/authController');
 const { crearOrden, listarOrdenes, obtenerOrdenPorId, actualizarEstadoOrden, eliminarOrden } = require('../controllers/ordersController');
+const {
+    crearSuscriptor,
+    listarSuscriptores,
+    obtenerSuscriptorPorId,
+    eliminarSuscriptor,
+    validarCodigoDescuento
+} = require('../controllers/subscriberController');
 
 
 const router = Router();
@@ -34,6 +41,14 @@ router.get('/orders', listarOrdenes);            // Listar todas
 router.get('/orders/:id', obtenerOrdenPorId);     // Obtener una específica
 router.put('/orders/:id', actualizarEstadoOrden); // Actualizar estado
 router.delete('/orders/:id', eliminarOrden);      // Eliminar orden
+
+// POST - Crear suscripción
+router.post('/suscriptores', crearSuscriptor);
+router.get('/suscriptores', listarSuscriptores);
+router.get('/suscriptores/:id', obtenerSuscriptorPorId);
+router.delete('/suscriptores/:id', eliminarSuscriptor);
+router.get('/suscriptores/validar/:codigo', validarCodigoDescuento);
+
 
 
 
